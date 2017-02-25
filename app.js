@@ -34,10 +34,6 @@ Vue.component('coffee-item', {
 })
   
 // all, show all coffees in the list
-Vue.component('all-view', {
-  template: '<div is="coffee-item" v-for="coffee in coffees" v-bind:coffee="coffee"></div>',
-  props: ['coffees']
-})
 
 // new, create a new coffee
   //  sub components
