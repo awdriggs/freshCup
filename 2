@@ -8,39 +8,41 @@
 
 <body>
   <div id="main">
-    <header>
-      <h1>Fresh Cup</h1>
-    </header>
-
-    <h2>Coffee Log</h2>
     <ul>
       <coffee-item v-for="coffee in coffees" :coffee="coffee">
       </coffee-item>
     </ul>
-
-    <new-coffee :flavors="flavors" current="new">
+    
+    <new-coffee>
     </new-coffee>
 
+    <notes-test>
+    </notes-test>
+     
+      
     <pre>{{$data}}</pre>
   </div>
   <!-- end main -->
   <!-- templates -->
-  <template id="new-coffee">
+  <template id="new-coffee" :notes="notes">
     <div>
-      <h2>new coffee</h2>
-      
-      <input type="text" name="name" placeholder="name">
-      <input type="text" name="origin" placeholder="origin">
-      
-      <h3>flavors</h3>
-      {{flavorList}}
-      <div v-for="flavor in flavors">
-        <button @click="reveal(flavor)">{{flavor.category}}</button>
+      {{notes}}
+      is a new coffee
+      <div v-for="note in notes">
+        {{note}}
       </div>
-     
-      
-      <flavor v-for="note in current" :note="note">
-      </flavor>
+
+
+      <input type="text" name="name">
+      <input type="text" name="origin">
+      <select multiple>
+        <option v-for="flavor in notes">
+          {{flavor}}
+        </option>
+      </select>
+      <li v-for="flavor in notes">
+        flavor: {{flavor}}
+      </li>
     </div>
   </template>
 
@@ -52,8 +54,9 @@
     </li>
   </template>
 
-  <template id="flavor-btn">
-    <button @click="addFlavor()">{{note}}</button>
+  <template id="notes-template" :notes="notes">
+    something
+    <div>notes: {{notes}}</div>
   </template>
 
   <script type="text/javascript" src="app.js"></script>
