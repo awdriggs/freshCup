@@ -46,6 +46,13 @@ Vue.component('newCoffee', {
   methods: {
     reveal: function(flavor) {
       this.current = flavor.notes;
+    },
+    //for function to have access to the event, then it needs a param passed in
+    list: function(event){
+      console.log('list called');
+      console.log('this in list', this);
+      console.log('event in list', event);
+      this.flavorList.push(event); 
     }
   },
   data: function() {
@@ -53,6 +60,14 @@ Vue.component('newCoffee', {
       current: "",
       flavorList: [],
     }
+  },
+  created() {
+    console.log('what is this?', this);
+    //never being called...
+    this.$on('addFlavor', function(event) {
+      console.log('nothing', event);
+      // this.flavorList.push()
+    })
   }
 })
 
@@ -60,11 +75,15 @@ Vue.component('flavor', {
   props: ['note'],
   template: "#flavor-btn",
   methods: {
-    addFlavor: function(event) {
+    addFlavor: function() {
       //emit the flavor..
       //what is this context?
-      console.log('event', event);
+      console.log('addFlavor called');
       console.log(this);
+      console.log("event in add flavor", event.srcElement.textContent);
+      //message can't be the same as function name, but why?
+      //this works now! event is the flavor text
+      this.$emit('add', event.srcElement.textContent);
     }
   }
 })
