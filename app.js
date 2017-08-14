@@ -52,7 +52,10 @@ Vue.component('newCoffee', {
       console.log('list called');
       console.log('this in list', this);
       console.log('event in list', event);
-      this.flavorList.push(event); 
+      this.flavorList.push(event);
+      //add code here,
+      // - check to see if the flavor is already in the list
+      // - if yes remove, else add it in
     }
   },
   data: function() {
