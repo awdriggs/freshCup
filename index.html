@@ -18,43 +18,67 @@
       </coffee-item>
     </ul>
 
-    <new-coffee :flavors="flavors" current="new">
+    <new-coffee @new-coffee="addNewCoffee" :flavors="flavors">
     </new-coffee>
 
     <pre>{{$data}}</pre>
-  </div>
-  <!-- end main -->
+  </div> <!-- end main -->
+   
   <!-- templates -->
   <template id="new-coffee">
     <div>
-      <h2>new coffee</h2>
+      <h2>{{coffee.title}}</h2>
       
-      <input type="text" name="name" placeholder="name">
-      <input type="text" name="origin" placeholder="origin">
-      
+      <input type="text" name="name" placeholder="name" v-model="coffee.title">
+      <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
+      <input type="text" name="origin" placeholder="producer" v-model="coffee.producer">
+
+      <h3>body</h3>
+      <!-- insert body feature here -->
+
       <h3>flavors</h3>
-      {{flavorList}}
-      <div v-for="flavor in flavors">
-        <button @click="reveal(flavor)">{{flavor.category}}</button>
-      </div>
-     
+      {{coffee.flavor.join(", ")}}
       
-      <flavor v-for="note in current" :note="note" @add="list">
+      <h4>types</h4>
+      <ul v-for="flavor in flavors" class="flavor-list">
+        <li @click="reveal(flavor)">{{flavor.category}}</li>
+      </ul>
+      <p v-if="current" @click="clearCurrent">close</p>
+      
+      <flavor v-for="note in current" :note="note" @add-flavor="updateList">
       </flavor>
+
+      <h3>adjectives</h3>
+      <!-- insert adjective feature here -->
+
+      <h3>notes</h3>
+      <textarea cols="40" v-model="coffee.notes"></textarea>
+
+      <button @click="submit">add</button>
     </div>
   </template>
 
-
   <template id="coffee-item">
-    <li>  
+    <li @click="expand">  
       <h3>{{coffee.title}}</h3>
       <p>{{coffee.producer}}, {{coffee.origin}}</p>
+
+      <!-- show this only if expand is true -->
+      <div v-show="showing">
+        <h4>Description</h4>
+        <ul>
+          <li>body: {{coffee.body}}</li>
+          <li>flavor: {{coffee.flavor}}</li>
+          <li>adjectives: {{coffee.adjectives}}</li>
+          <li>notes: {{coffee.notes}}</li>
+        </ul> 
+      </div>
     </li>
   </template>
 
   <template id="flavor-btn">
-    <button @click="addFlavor()">{{note}}</button>
-  </template>
+    <button @click="addFlavor">{{note}}</button>
+  </template> <!-- end of templates -->
 
   <script type="text/javascript" src="app.js"></script>
 </body>
