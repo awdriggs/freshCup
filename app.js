@@ -20,34 +20,37 @@ var apiData = {
     adjectives: ["clean", "tart", "juicy"],
     notes: "Good for espresso"
   }, ], // end of coffee array
-  flavors: [{
-    category: "fruit",
-    notes: ['lemon', 'lime', 'grapefruit', 'clementine', 'tangerine', 'mandarin orange', 'orange', ]
-  }, {
-    category: "chocolate",
-    notes: ['cacao nibs', 'dark chocolate', 'bakers chocalate', 'bitterwsweet chocolate', 'cocoa powder', 'milk chocolate']
-  }, ],
-  body: [{
-    category: "light",
-    descriptions: ['watery', 'tea-like', 'silky', 'juicy']
-  }, {
-    category: "medium",
-    descriptions: ['smooth', '2% milk', 'syrupy', 'round', 'creamy'],
-  }, {
-    category: "heavy",
-    descriptions: ['full', 'velvety', 'big', 'chewy', 'coating']
-  }],
-  adjectives: ['bright', 'muted', 'unbalanced', 'balanced', 'complex', 'delicate', 'juicy', 'dry', 'dirty', 'clean'],
+
+  tastings: {
+    flavors: [{
+      category: "fruit",
+      notes: ['lemon', 'lime', 'grapefruit', 'clementine', 'tangerine', 'mandarin orange', 'orange', ]
+    }, {
+      category: "chocolate",
+      notes: ['cacao nibs', 'dark chocolate', 'bakers chocalate', 'bitterwsweet chocolate', 'cocoa powder', 'milk chocolate']
+    }, ],
+    body: [{
+      category: "light",
+      descriptions: ['watery', 'tea-like', 'silky', 'juicy']
+    }, {
+      category: "medium",
+      descriptions: ['smooth', '2% milk', 'syrupy', 'round', 'creamy'],
+    }, {
+      category: "heavy",
+      descriptions: ['full', 'velvety', 'big', 'chewy', 'coating']
+    }],
+    adjectives: ['bright', 'muted', 'unbalanced', 'balanced', 'complex', 'delicate', 'juicy', 'dry', 'dirty', 'clean'],
+  }
 }
 
 // components
 //coffee-item, view for showing each individual coffee item
 Vue.component('coffeeItem', {
   template: "#coffee-item",
-  props: ['coffee'],
+  props: ['coffee', 'add'],
   data: function() {
     return {
-      showing: false
+      showing: this.add
     }
   },
   methods: {
@@ -61,7 +64,7 @@ Vue.component('coffeeItem', {
 
 // new coffee
 Vue.component('newCoffee', {
-  props: ['flavors', ],
+  props: ['tastings', ],
   template: "#new-coffee",
   methods: {
     reveal: function(flavor) {
@@ -71,7 +74,7 @@ Vue.component('newCoffee', {
       this.current = "";
     },
     //for function to have access to the event, then it needs a param passed in
-    updateList: function(_flavor) {
+    updateFlavors: function(_flavor) {
       // console.log('list called');
       // console.log('this in list', this);
       // console.log('event in list', event);
@@ -83,24 +86,47 @@ Vue.component('newCoffee', {
         this.coffee.flavor.splice(index, 1);
       } else this.coffee.flavor.push(_flavor);
     },
+    updateAdj: function(_adj) {
+      console.log(_adj);
+      var index = this.coffee.adjectives.indexOf(_adj);
+
+      if (index != -1) {
+        this.coffee.adjectives.splice(index, 1);
+      } else this.coffee.adjectives.push(_adj);
+    },
     submit: function() {
       //console.log(this.coffee);
       //no camel case in the emit message!
       this.$emit('new-coffee', this.coffee);
-    }
-  },
-  data: function() {
-    return {
-      current: "",
-      flavorList: [],
-      coffee: {
-        title: "new coffee",
+      this.reset();
+    },
+    reset: function() {
+      this.coffee = {
+        title: "",
         origin: "",
         producer: "",
         body: "",
         flavor: [],
         adjectives: [],
-        notes: ""
+        notes: "",
+        showing: true
+      };
+    }
+  },
+  data: function() {
+    return {
+      current: "",
+      currentBody: {},
+      flavorList: [],
+      coffee: {
+        title: "",
+        origin: "",
+        producer: "",
+        body: "",
+        flavor: [],
+        adjectives: [],
+        notes: "",
+        showing: true
       }
     }
   },
@@ -122,6 +148,19 @@ Vue.component('flavor', {
   }
 })
 
+Vue.component('adj', {
+  props: ['adj'],
+  template: "#adj-btn",
+  methods: {
+    addAdj: function() {
+      console.log("clicked");
+      console.log(event.srcElement.textContent);
+
+      this.$emit('add-adj', event.srcElement.textContent);
+    }
+  }
+});
+
 // all, show all coffees in the list
 
 // new, create a new coffee
@@ -135,7 +174,7 @@ var vm = new Vue({
   el: '#main',
   data: {
     coffees: apiData.coffees,
-    flavors: apiData.flavors
+    tastings: apiData.tastings
   },
   methods: {
     addNewCoffee: function(coffee) {

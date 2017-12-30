@@ -14,47 +14,68 @@
 
     <h2>Coffee Log</h2>
     <ul>
-      <coffee-item v-for="coffee in coffees" :coffee="coffee">
+      <coffee-item v-for="coffee in coffees" :coffee="coffee" :add="false">
       </coffee-item>
     </ul>
 
-    <new-coffee @new-coffee="addNewCoffee" :flavors="flavors">
+    <new-coffee @new-coffee="addNewCoffee" :tastings="tastings">
     </new-coffee>
 
     <pre>{{$data}}</pre>
-  </div> <!-- end main -->
-   
+  </div>
+  <!-- end main -->
+
   <!-- templates -->
   <template id="new-coffee">
+    <!-- just do a coffee item here with the blank coffee?\\ -->
     <div>
-      <h2>{{coffee.title}}</h2>
+      <ul v-if="coffee.title">
+        <coffee-item :coffee="coffee" :add="true">
+        </coffee-item>
+      </ul>
+      
+      
+      <h2>Add New</h2>
       
       <input type="text" name="name" placeholder="name" v-model="coffee.title">
       <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
-      <input type="text" name="origin" placeholder="producer" v-model="coffee.producer">
+      <input type="text" name="producer" placeholder="producer" v-model="coffee.producer">
 
-      <h3>body</h3>
+      <h3>Body: {{coffee.body}}</h3>
       <!-- insert body feature here -->
+      <ul v-for="body in tastings.body">
+        <li @click="currentBody = body.category">{{body.category}}
+          <ul v-for="description in body.descriptions" v-show="body.category == currentBody">
+            <li @click="coffee.body = description">{{description}}</li>
+          </ul>
+        </li>
+      </ul>
+      <p v-if="currentBody" @click="currentBody = ''">close</p>
 
       <h3>flavors</h3>
       {{coffee.flavor.join(", ")}}
       
       <h4>types</h4>
-      <ul v-for="flavor in flavors" class="flavor-list">
+      <ul v-for="flavor in tastings.flavors" class="flavor-list">
         <li @click="reveal(flavor)">{{flavor.category}}</li>
       </ul>
       <p v-if="current" @click="clearCurrent">close</p>
       
-      <flavor v-for="note in current" :note="note" @add-flavor="updateList">
+      <flavor v-for="note in current" :note="note" @add-flavor="updateFlavors">
       </flavor>
 
       <h3>adjectives</h3>
+      {{coffee.adjectives.join(", ")}}
       <!-- insert adjective feature here -->
+      <adj v-for="adjective in tastings.adjectives" :adj="adjective" @add-adj="updateAdj">
+        <!-- {{adjective}} -->
+      </adj>
 
       <h3>notes</h3>
       <textarea cols="40" v-model="coffee.notes"></textarea>
 
       <button @click="submit">add</button>
+      <button @click="reset">reset</button>
     </div>
   </template>
 
@@ -78,7 +99,12 @@
 
   <template id="flavor-btn">
     <button @click="addFlavor">{{note}}</button>
-  </template> <!-- end of templates -->
+  </template>
+  <!-- end of templates -->
+  <!-- do i need this? -->
+  <template id="adj-btn">
+    <button @click="addAdj">{{adj}}</button>
+  </template>
 
   <script type="text/javascript" src="app.js"></script>
 </body>
