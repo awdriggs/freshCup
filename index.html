@@ -12,14 +12,15 @@
       <h1>Fresh Cup</h1>
     </header>
 
-    <h2>Coffee Log</h2>
-    <ul>
-      <coffee-item v-for="coffee in coffees" :coffee="coffee" :add="false">
-      </coffee-item>
-    </ul>
 
     <new-coffee @new-coffee="addNewCoffee" :tastings="tastings">
     </new-coffee>
+
+    <h2>Past Pours</h2>
+    <ul>
+      <coffee-item v-for="coffee in coffees" :coffee="coffee" :display="false">
+      </coffee-item>
+    </ul>
 
     <pre>{{$data}}</pre>
   </div>
@@ -27,56 +28,51 @@
 
   <!-- templates -->
   <template id="new-coffee">
-    <!-- just do a coffee item here with the blank coffee?\\ -->
     <div>
+    <!-- hijacking the coffee item for reuse here -->
+    <!-- display will control whether the item is explanded to start or not. -->
       <ul v-if="coffee.title">
-        <coffee-item :coffee="coffee" :add="true">
+        <coffee-item :coffee="coffee" :display="true">
         </coffee-item>
       </ul>
       
+      <div class="controls"> 
+        <h2>Add New</h2>
       
-      <h2>Add New</h2>
+        <input type="text" name="name" placeholder="name" v-model="coffee.title">
+        <input type="text" name="producer" placeholder="producer" v-model="coffee.producer">
+        <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
+
+        <h3>Body</h3>
+        <ul v-for="body in tastings.body">
+          <li @click="currentBody = body.category">{{body.category}}
+            <ul v-for="description in body.descriptions" v-show="body.category == currentBody">
+              <li @click="coffee.body = description">{{description}}</li>
+            </ul>
+          </li>
+        </ul>
+        <p v-if="currentBody" @click="currentBody = ''">close</p>
+
+        <h3>flavors</h3>
+        <ul v-for="flavor in tastings.flavors" class="flavor-list">
+          <li @click="reveal(flavor)">{{flavor.category}}</li>
+        </ul>
+        <p v-if="current" @click="clearCurrent">close</p>
       
-      <input type="text" name="name" placeholder="name" v-model="coffee.title">
-      <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
-      <input type="text" name="producer" placeholder="producer" v-model="coffee.producer">
+        <flavor v-for="note in current" :note="note" @add-flavor="updateFlavors">
+        </flavor>
 
-      <h3>Body: {{coffee.body}}</h3>
-      <!-- insert body feature here -->
-      <ul v-for="body in tastings.body">
-        <li @click="currentBody = body.category">{{body.category}}
-          <ul v-for="description in body.descriptions" v-show="body.category == currentBody">
-            <li @click="coffee.body = description">{{description}}</li>
-          </ul>
-        </li>
-      </ul>
-      <p v-if="currentBody" @click="currentBody = ''">close</p>
+        <h3>adjectives</h3>
+        <adj v-for="adjective in tastings.adjectives" :adj="adjective" @add-adj="updateAdj">
+        </adj>
 
-      <h3>flavors</h3>
-      {{coffee.flavor.join(", ")}}
-      
-      <h4>types</h4>
-      <ul v-for="flavor in tastings.flavors" class="flavor-list">
-        <li @click="reveal(flavor)">{{flavor.category}}</li>
-      </ul>
-      <p v-if="current" @click="clearCurrent">close</p>
-      
-      <flavor v-for="note in current" :note="note" @add-flavor="updateFlavors">
-      </flavor>
+        <h3>notes</h3>
+        <textarea cols="40" v-model="coffee.notes"></textarea>
 
-      <h3>adjectives</h3>
-      {{coffee.adjectives.join(", ")}}
-      <!-- insert adjective feature here -->
-      <adj v-for="adjective in tastings.adjectives" :adj="adjective" @add-adj="updateAdj">
-        <!-- {{adjective}} -->
-      </adj>
-
-      <h3>notes</h3>
-      <textarea cols="40" v-model="coffee.notes"></textarea>
-
-      <button @click="submit">add</button>
-      <button @click="reset">reset</button>
-    </div>
+        <button @click="submit">add</button>
+        <button @click="reset">reset</button>
+      </div>  <!-- end of controls div -->
+    </div>    <!-- end of component div --> 
   </template>
 
   <template id="coffee-item">

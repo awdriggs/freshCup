@@ -47,10 +47,10 @@ var apiData = {
 //coffee-item, view for showing each individual coffee item
 Vue.component('coffeeItem', {
   template: "#coffee-item",
-  props: ['coffee', 'add'],
+  props: ['coffee', 'display'],
   data: function() {
     return {
-      showing: this.add
+      showing: this.display
     }
   },
   methods: {
