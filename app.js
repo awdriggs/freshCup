@@ -57,9 +57,8 @@ Vue.component('coffeeItem', {
     expand: function() {
       this.showing = !this.showing;
       console.log(this.showing);
-    }
+    }, 
   }
-
 })
 
 // new coffee
@@ -75,9 +74,6 @@ Vue.component('newCoffee', {
     },
     //for function to have access to the event, then it needs a param passed in
     updateFlavors: function(_flavor) {
-      // console.log('list called');
-      // console.log('this in list', this);
-      // console.log('event in list', event);
 
       //get the index of the event, if -1, remove flavor, else add
       var index = this.coffee.flavor.indexOf(_flavor);
@@ -109,7 +105,6 @@ Vue.component('newCoffee', {
         flavor: [],
         adjectives: [],
         notes: "",
-        showing: true
       };
     }
   },
@@ -126,7 +121,6 @@ Vue.component('newCoffee', {
         flavor: [],
         adjectives: [],
         notes: "",
-        showing: true
       }
     }
   },
@@ -137,10 +131,6 @@ Vue.component('flavor', {
   template: "#flavor-btn",
   methods: {
     addFlavor: function() {
-      // console.log('addFlavor called');
-      // console.log('addFlavor event', event);
-      // console.log('adddFlavor this:', this);
-
       //emit message can't be the same as function name, but why?, probably just the issue with camel casing
       //this works now! event is the flavor text
       this.$emit('add-flavor', event.srcElement.textContent);
@@ -153,8 +143,6 @@ Vue.component('adj', {
   template: "#adj-btn",
   methods: {
     addAdj: function() {
-      console.log("clicked");
-      console.log(event.srcElement.textContent);
 
       this.$emit('add-adj', event.srcElement.textContent);
     }
@@ -163,13 +151,7 @@ Vue.component('adj', {
 
 // all, show all coffees in the list
 
-// new, create a new coffee
-//  sub components
-//  add body
-//    add flavors
-//    add intesifiers
-//    add notes
-
+//main vue instance
 var vm = new Vue({
   el: '#main',
   data: {

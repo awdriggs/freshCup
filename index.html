@@ -12,7 +12,6 @@
       <h1>Fresh Cup</h1>
     </header>
 
-
     <new-coffee @new-coffee="addNewCoffee" :tastings="tastings">
     </new-coffee>
 
@@ -29,16 +28,15 @@
   <!-- templates -->
   <template id="new-coffee">
     <div>
-    <!-- hijacking the coffee item for reuse here -->
-    <!-- display will control whether the item is explanded to start or not. -->
+      <!-- hijacking the coffee item for reuse here -->
+      <!-- display will control whether the item is explanded to start or not. -->
       <ul v-if="coffee.title">
         <coffee-item :coffee="coffee" :display="true">
         </coffee-item>
       </ul>
       
       <div class="controls"> 
-        <h2>Add New</h2>
-      
+        <h2>Add New Coffee</h2>
         <input type="text" name="name" placeholder="name" v-model="coffee.title">
         <input type="text" name="producer" placeholder="producer" v-model="coffee.producer">
         <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
@@ -51,7 +49,7 @@
             </ul>
           </li>
         </ul>
-        <p v-if="currentBody" @click="currentBody = ''">close</p>
+        <p v-if="Object.keys(currentBody).length > 0" @click="currentBody = {}">close</p>
 
         <h3>flavors</h3>
         <ul v-for="flavor in tastings.flavors" class="flavor-list">
@@ -67,7 +65,7 @@
         </adj>
 
         <h3>notes</h3>
-        <textarea cols="40" v-model="coffee.notes"></textarea>
+        <textarea v-model="coffee.notes"></textarea>
 
         <button @click="submit">add</button>
         <button @click="reset">reset</button>
@@ -85,8 +83,8 @@
         <h4>Description</h4>
         <ul>
           <li>body: {{coffee.body}}</li>
-          <li>flavor: {{coffee.flavor}}</li>
-          <li>adjectives: {{coffee.adjectives}}</li>
+          <li>flavors: {{coffee.flavor.join(', ')}}</li>
+          <li>adjectives: {{coffee.adjectives.join(', ')}}</li>
           <li>notes: {{coffee.notes}}</li>
         </ul> 
       </div>
