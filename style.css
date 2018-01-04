@@ -1,0 +1,12 @@
+body {
+  margin: 0; }
+
+header.top {
+  width: 100%;
+  background-color: blue;
+  padding: 1rem; }
+  header.top h1 {
+    font-size: 3rem;
+    margin: 0; }
+
+/*# sourceMappingURL=style.css.map */
