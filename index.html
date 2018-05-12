@@ -2,6 +2,7 @@
 
 <head>
   <title>Fresh Cup</title>
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="vue.js"></script>
 </head>
@@ -10,10 +11,10 @@
   <div id="main">
     <header class="top">
       <h1>Fresh Cup</h1>
-      <button class="circle-btn">+</button>
+      <div class="circle-btn" @click="displayNew = !displayNew">{{displayNew ? "–": "+"}}</div>
     </header>
-      
-    <new-coffee @new-coffee="addNewCoffee" :tastings="tastings">
+
+    <new-coffee @new-coffee="addNewCoffee" :tastings="tastings" v-if="displayNew"> 
     </new-coffee>
 
     <h2>Past Pours</h2>
@@ -22,20 +23,14 @@
       </coffee-item>
     </ul>
 
-    <pre>{{$data}}</pre>
+    <!-- <pre>{{$data}}</pre> -->
   </div>
   <!-- end main -->
 
   <!-- templates -->
   <template id="new-coffee">
     <div>
-      <!-- hijacking the coffee item for reuse here -->
-      <!-- display will control whether the item is explanded to start or not. -->
-      <ul v-if="coffee.title">
-        <coffee-item :coffee="coffee" :display="true">
-        </coffee-item>
-      </ul>
-      
+            
       <div class="controls"> 
         <h2>Add New Coffee</h2>
         <input type="text" name="name" placeholder="name" v-model="coffee.title">
@@ -71,6 +66,14 @@
         <button @click="submit">add</button>
         <button @click="reset">reset</button>
       </div>  <!-- end of controls div -->
+
+      <!-- display will control whether the item is explanded to start or not. -->
+      <!-- hijacking the coffee item for reuse here -->
+      <ul v-if="coffee.title">
+        <coffee-item :coffee="coffee" :display="true">
+        </coffee-item>
+      </ul>
+
     </div>    <!-- end of component div --> 
   </template>
 

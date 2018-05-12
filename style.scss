@@ -1,15 +1,49 @@
+$grey: #B7B7B2;
+
 body {
   margin: 0;
+  font-family: 'Comfortaa', Arial;
 }
+
+button {
+  background-color: $grey;
+  color: #FFF;
+  border: none;
+  font-size: 3rem;
+
+  &:focus { outline: none; }
+}
+
+#main {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 header.top {
   width: 100%;
   background-color: blue;
-
+  position: relative;
   padding: 1rem;
+
   h1 {
     font-size: 3rem;
     margin: 0;
-    
+    // display: inline;
   }
+
+  .circle-btn {
+    font-size: 4rem;
+  background-color: $grey;
+  color: #FFF;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    text-align: center; 
+  }
+
+
 }
  

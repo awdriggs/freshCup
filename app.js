@@ -57,7 +57,7 @@ Vue.component('coffeeItem', {
     expand: function() {
       this.showing = !this.showing;
       console.log(this.showing);
-    }, 
+    },
   }
 })
 
@@ -155,6 +155,7 @@ Vue.component('adj', {
 var vm = new Vue({
   el: '#main',
   data: {
+    displayNew: false,
     coffees: apiData.coffees,
     tastings: apiData.tastings
   },
