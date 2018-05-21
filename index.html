@@ -14,7 +14,7 @@
       <div class="circle-btn" @click="displayNew = !displayNew">{{displayNew ? "–": "+"}}</div>
     </header>
 
-    <new-coffee @new-coffee="addNewCoffee" :tastings="tastings" v-if="displayNew"> 
+    <new-coffee @new-coffee="addNewCoffee" :tastings="tastings" v-if="displayNew">
     </new-coffee>
 
     <h2>Past Pours</h2>
@@ -36,35 +36,34 @@
         <input type="text" name="name" placeholder="name" v-model="coffee.title">
         <input type="text" name="producer" placeholder="producer" v-model="coffee.producer">
         <input type="text" name="origin" placeholder="origin" v-model="coffee.origin">
+           
+        <p v-if="current" @click="current=''">close</p>
 
-        <h3>Body</h3>
-        <ul v-for="body in tastings.body">
-          <li @click="currentBody = body.category">{{body.category}}
-            <ul v-for="description in body.descriptions" v-show="body.category == currentBody">
-              <li @click="coffee.body = description">{{description}}</li>
-            </ul>
-          </li>
-        </ul>
-        <p v-if="Object.keys(currentBody).length > 0" @click="currentBody = {}">close</p>
+        <button @click="current='flavors'">Flavors</button>
+        <button @click="current='body'">Body</button>
+        <button @click="current='adj'">Adjective</button>
+        <button @click="current='notes'">Notes</button>
 
-        <h3>flavors</h3>
-        <ul v-for="flavor in tastings.flavors" class="flavor-list">
-          <li @click="reveal(flavor)">{{flavor.category}}</li>
-        </ul>
-        <p v-if="current" @click="clearCurrent">close</p>
-      
-        <flavor v-for="note in current" :note="note" @add-flavor="updateFlavors">
-        </flavor>
+        <tasting v-show="current=='flavors'" :info="tastings.flavors" :type="'flavors'" @add-flavor="updateFlavors">
+        </tasting>
 
-        <h3>adjectives</h3>
-        <adj v-for="adjective in tastings.adjectives" :adj="adjective" @add-adj="updateAdj">
-        </adj>
+        <tasting v-show="current=='body'" :info="tastings.body" :type="'body'" @add-flavor="updateFlavors">
+        </tasting>
 
-        <h3>notes</h3>
-        <textarea v-model="coffee.notes"></textarea>
+        <div class="traits" v-show="current=='adj'">
+          <h3>Adjectives</h3>
+          <adj v-for="adjective in tastings.adjectives" :adj="adjective" @add-flavor="updateFlavors">
+        </div>
 
+        <div class="traits" v-show="current=='notes'">
+          <h3>Notes</h3>
+         <textarea v-model="coffee.notes"></textarea>
+        </div>
+        
+        <div class="submit">
         <button @click="submit">add</button>
         <button @click="reset">reset</button>
+        </div>
       </div>  <!-- end of controls div -->
 
       <!-- display will control whether the item is explanded to start or not. -->
@@ -73,7 +72,6 @@
         <coffee-item :coffee="coffee" :display="true">
         </coffee-item>
       </ul>
-
     </div>    <!-- end of component div --> 
   </template>
 
@@ -87,7 +85,7 @@
         <h4>Description</h4>
         <ul>
           <li>body: {{coffee.body}}</li>
-          <li>flavors: {{coffee.flavor.join(', ')}}</li>
+          <li>flavors: {{coffee.flavors.join(', ')}}</li>
           <li>adjectives: {{coffee.adjectives.join(', ')}}</li>
           <li>notes: {{coffee.notes}}</li>
         </ul> 
@@ -95,13 +93,25 @@
     </li>
   </template>
 
-  <template id="flavor-btn">
-    <button @click="addFlavor">{{note}}</button>
-  </template>
-  <!-- end of templates -->
-  <!-- do i need this? -->
   <template id="adj-btn">
     <button @click="addAdj">{{adj}}</button>
+  </template>
+
+  <template id="tasting">
+    <div class="traits">
+      <h3>{{type}}</h3>
+      <div class="categories">
+        <ul> 
+          <li v-for="item in info" @click="current=item.notes">{{item.category}}</li> 
+        </ul>
+        <p v-if="current" @click="current=''">close</p>
+      </div>
+
+      <div v-if="current" class="descriptions"> 
+        <button v-for="note in current" @click="add(note, type)">{{note}}</button> 
+      </div>
+    </div>
+    <!-- end of traits --> 
   </template>
 
   <script type="text/javascript" src="js/app.js"></script>

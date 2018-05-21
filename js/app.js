@@ -8,7 +8,7 @@ var apiData = {
     origin: "Rwanda",
     producer: "Nyungwe Cooperative",
     body: "Full",
-    flavor: ["caramel", "cocoa", "mulling spice"],
+    flavors: ["caramel", "cocoa", "mulling spice"],
     adjectives: ["balanced", "complex", "bright"],
     notes: "Good for espresso"
   }, {
@@ -16,7 +16,7 @@ var apiData = {
     origin: "Ethiopia",
     producer: "Duromina Cooperative",
     body: "syrupy",
-    flavor: ["peach", "mango", "lemon", "caramel", "bergamot", "layered chocolate", "dark fruits"],
+    flavors: ["peach", "mango", "lemon", "caramel", "bergamot", "layered chocolate", "dark fruits"],
     adjectives: ["clean", "tart", "juicy"],
     notes: "Good for espresso"
   }, ], // end of coffee array
@@ -31,13 +31,13 @@ var apiData = {
     }, ],
     body: [{
       category: "light",
-      descriptions: ['watery', 'tea-like', 'silky', 'juicy']
+      notes: ['watery', 'tea-like', 'silky', 'juicy']
     }, {
       category: "medium",
-      descriptions: ['smooth', '2% milk', 'syrupy', 'round', 'creamy'],
+      notes: ['smooth', '2% milk', 'syrupy', 'round', 'creamy'],
     }, {
       category: "heavy",
-      descriptions: ['full', 'velvety', 'big', 'chewy', 'coating']
+      notes: ['full', 'velvety', 'big', 'chewy', 'coating']
     }],
     adjectives: ['bright', 'muted', 'unbalanced', 'balanced', 'complex', 'delicate', 'juicy', 'dry', 'dirty', 'clean'],
   }
@@ -61,34 +61,52 @@ Vue.component('coffeeItem', {
   }
 })
 
+Vue.component('tasting', {
+  props: ['type', 'info'],
+  template: "#tasting",
+  methods: {
+    add: function(_note, _type) {
+      var send = {
+        type: _type,
+        note: _note
+      }
+      this.$emit('add-flavor', send);
+    },
+  },
+  // updated: function(){
+  //   console.log(this.current);
+  //   this.current = ''; //this just clears out the child container so a body can't get a flavor attribute
+  // },
+
+  data: function() {
+    return {
+      current: '',
+    }
+  }
+});
+
 // new coffee
 Vue.component('newCoffee', {
   props: ['tastings', ],
   template: "#new-coffee",
   methods: {
-    reveal: function(flavor) {
-      this.current = flavor.notes;
-    },
-    clearCurrent: function() {
-      this.current = "";
-    },
     //for function to have access to the event, then it needs a param passed in
     updateFlavors: function(_flavor) {
+      var type = _flavor.type;
+      var note = _flavor.note;
 
-      //get the index of the event, if -1, remove flavor, else add
-      var index = this.coffee.flavor.indexOf(_flavor);
+      //if the flavor type is body, do a single
+      if (type == "body") {
+        this.coffee.body = note;
+      } else {
+        //if the trait is a flavor, then add it to an array...
+        //get the index of the event, if -1, remove flavor, else add
+        var index = this.coffee[type].indexOf(note);
 
-      if (index != -1) {
-        this.coffee.flavor.splice(index, 1);
-      } else this.coffee.flavor.push(_flavor);
-    },
-    updateAdj: function(_adj) {
-      console.log(_adj);
-      var index = this.coffee.adjectives.indexOf(_adj);
-
-      if (index != -1) {
-        this.coffee.adjectives.splice(index, 1);
-      } else this.coffee.adjectives.push(_adj);
+        if (index != -1) {
+          this.coffee[type].splice(index, 1);
+        } else this.coffee[type].push(_flavor.note);
+      }
     },
     submit: function() {
       //console.log(this.coffee);
@@ -102,7 +120,7 @@ Vue.component('newCoffee', {
         origin: "",
         producer: "",
         body: "",
-        flavor: [],
+        flavors: [],
         adjectives: [],
         notes: "",
       };
@@ -110,15 +128,13 @@ Vue.component('newCoffee', {
   },
   data: function() {
     return {
-      current: "",
-      currentBody: {},
-      flavorList: [],
+      current: undefined,
       coffee: {
         title: "",
         origin: "",
         producer: "",
         body: "",
-        flavor: [],
+        flavors: [],
         adjectives: [],
         notes: "",
       }
@@ -133,6 +149,7 @@ Vue.component('flavor', {
     addFlavor: function() {
       //emit message can't be the same as function name, but why?, probably just the issue with camel casing
       //this works now! event is the flavor text
+      debugger;
       this.$emit('add-flavor', event.srcElement.textContent);
     }
   }
@@ -144,7 +161,7 @@ Vue.component('adj', {
   methods: {
     addAdj: function() {
 
-      this.$emit('add-adj', event.srcElement.textContent);
+      this.$emit('add-flavor', {type: 'adjectives', note: event.srcElement.textContent});
     }
   }
 });
